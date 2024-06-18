@@ -1,0 +1,14 @@
+{
+    "python.analysis.autoImportCompletions": true, 
+    "python.analysis.diagnosticMode": "workspace", // 전체 폴더에 대해 검사
+    "files.insertFinalNewline": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "python.terminal.activateEnvInCurrentTerminal": true,
+
+}

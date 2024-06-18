@@ -1,11 +1,13 @@
 # Customized chatbot: 좀 더 ui를 제어할 수 있는 구조로
 
+import json
 import re
 import time  # 시간 지연을 위한 라이브러리를 불러옵니다.
+from os import environ as env
+
 import gradio as gr  # 그라디오 라이브러리를 불러옵니다.
 from dotenv import load_dotenv
 from openai import OpenAI
-from os import environ as env
 
 load_dotenv()  # .env 파일에서 환경 변수 로드
 openai_client = OpenAI()
@@ -89,12 +91,15 @@ AI:
 }
 """
 
+
 def print_like_dislike(x: gr.LikeData):
     print(x.index, x.value, x.liked)
+
 
 def add_text(history, text):
     history = history + [(text, None)]
     return history, gr.Textbox(value="", interactive=False)
+
 
 def bot(history):
     history_openai_format = []
@@ -110,6 +115,8 @@ def bot(history):
                 {"role": "assistant", "content": assistant})
 
     start_time = time.time()
+    print(json.dumps(history_openai_format, indent=2,
+          ensure_ascii=False).replace("\\n", "\n"))
 
     response = openai_client.chat.completions.create(
         model=env.get("OPENAI_MODEL"),
@@ -137,12 +144,6 @@ def bot(history):
             if is_print_speak_time == False:
                 speak_time = time.time()
                 print(f"speak 시작 시간: {speak_time - start_time}초")
-
-        # Json내에서  "system"속성에 해당 하는 값 출력하기. 완전한 json 형태가 아니기 때문에 패턴식을 쓴다.
-        # pattern = r'"system":\s*"([^"]+)"?'
-        # match = re.search(pattern, partial_message)
-        # if match:
-        #     system_message = match.group(1)
 
         history[-1][1] = ""
         if speak_message:
